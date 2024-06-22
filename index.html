@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Camera Capture and Save to Firebase</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        h1, h2 {
+            text-align: center;
+            background: linear-gradient(45deg, #ff6a00, #ee0979, #42a5f5, #00d2ff, #00ff6a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: rainbow 10s infinite linear;
+            font-size: 2.5em;
+            margin-bottom: 0.5em;
+        }
+
+        @keyframes rainbow {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        video, canvas {
+            width: 100%;
+            max-width: 400px;
+            display: block;
+            margin: 0 auto;
+            margin-bottom: 20px;
+        }
+
+        #capture {
+            display: block;
+            margin: 0 auto 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        #capture:hover {
+            background-color: #0056b3;
+        }
+
+        #images {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: -2px;
+        }
+
+        .image-wrapper {
+            position: relative;
+            display: inline-block;
+            border: 3px solid #4a42e6;
+            padding: 5px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.3s, border-color 0.3s;
+        }
+
+        .image-wrapper:hover {
+            border-color: #007bff;
+        }
+
+        .image-wrapper img {
+            width: 100px;
+            height: auto;
+            border-radius: 5px;
+        }
+
+        .image-wrapper.maximized img {
+            width: auto;
+            height: auto;
+            max-width: 90vw;
+            max-height: 90vh;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 10px;
+            background: #ff3333;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        /* New Header Styles */
+        .header-container {
+            display: flex;
+            justify-content: center; /* Center the container horizontally */
+            width: 100%;
+            margin-top: 10px; /* Adjust this as needed for spacing below h2 */
+        }
+
+        header {
+            background-color: rgb(231, 231, 19);
+            color: rgb(10, 10, 10);
+            padding: 10px 20px;
+            border-radius: 10px;
+            text-align: center;
+            width: auto;
+            max-width: 300px; /* Adjust the max-width as needed */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        header h3 {
+            font-size: 1em;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>USE IT LIKE A MIRROR</h1>
+    <h2>Web Mirror Camera: Your Safe and Private Online Mirror</h2>
+    <div class="header-container">
+        <header>
+            <h3>Pose Capture Touch & View</h3>
+        </header>
+    </div>
+    <video id="video" autoplay></video>
+    <button id="capture">Capture Photo</button>
+    <canvas id="canvas" style="display:none;"></canvas>
+    <h2>Captured Images</h2>
+    <div id="images"></div>
+    <div id="overlay" class="overlay" style="display:none;">
+        <button id="closeButton" class="close-button">Close</button>
+    </div>
+    <script type="module" src="script.js"></script>
+</body>
+</html>
