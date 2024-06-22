@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Camera Upload to Firebase</title>
+    <style>
+        video, canvas { width: 100%; max-width: 400px; }
+        #images { display: flex; flex-wrap: wrap; gap: 10px; }
+        .image-wrapper { border: 1px solid #ccc; padding: 5px; }
+        .image-wrapper img { width: 100px; height: auto; }
+    </style>
+</head>
+<body>
+    <h1>Camera Capture and Save to Firebase Realtime Database</h1>
+    <video id="video" autoplay></video>
+    <button id="capture">Capture Photo</button>
+    <canvas id="canvas" style="display:none;"></canvas>
+    <h2>Captured Images</h2>
+    <div id="images"></div>
+    <script type="module" src="script.js"></script>
+</body>
+</html>
