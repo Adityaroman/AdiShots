@@ -3,162 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Camera Capture and Save to Firebase</title>
+    <title>Interactive AI News Article</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            background: #f5f7fa;
             color: #333;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
+            overflow-x: hidden;
         }
-        h1, h2 {
-            text-align: center;
-            background: linear-gradient(45deg, #ff6a00, #ee0979, #42a5f5, #00d2ff, #00ff6a);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: rainbow 10s infinite linear;
-            font-size: 2em;
-            margin-bottom: 0.5em;
-        }
-        @keyframes rainbow {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-        }
-        video, canvas {
-            width: 100%;
-            max-width: 400px;
-            display: block;
-            margin: 0 auto;
-            margin-bottom: 20px;
-        }
-        #capture {
-            display: block;
-            margin: 0 auto 20px;
+
+        header {
+            background: #007bff;
+            color: #fff;
             padding: 10px 20px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s;
+            text-align: center;
         }
-        #capture:hover {
-            background-color: #0056b3;
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
         }
-        #images {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 20px;
+
+        .container {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
         }
-        .image-wrapper {
+
+        .article {
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            color: #007bff;
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
             position: relative;
             display: inline-block;
-            border: 3px solid #4a42e6;
-            padding: 5px;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: transform 0.3s, border-color 0.3s;
+            padding: 5px 0;
+            transition: background 0.3s, color 0.3s;
         }
-        .image-wrapper:hover {
-            border-color: #007bff;
+
+        .article p:hover {
+            background: #007bff;
+            color: #fff;
         }
-        .image-wrapper img {
-            width: 100px;
-            height: auto;
-            border-radius: 5px;
-        }
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-        .close-button {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            padding: 10px;
-            background: #ff3333;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        .header-container {
-            display: flex;
-            justify-content: center; /* Center the container horizontally */
-            width: 100%;
-            margin-top: 10px; /* Adjust this as needed for spacing below h2 */
-        }
-        header {
-            background-color: rgb(231, 231, 19);
-            color: rgb(10, 10, 10);
-            padding: 10px 20px;
-            border-radius: 10px;
-            text-align: center;
-            width: auto;
-            max-width: 300px; /* Adjust the max-width as needed */
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-        header h3 {
-            font-size: 1em;
-            margin: 0;
-        }
-        .controls {
-            display: flex;
-            justify-content: space-around;
-            width: 100%;
-            max-width: 400px;
-            margin-bottom: 20px;
-        }
-        .controls label {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+
+        /* Hidden elements for capturing */
+        video, canvas {
+            display: none;
         }
     </style>
 </head>
 <body>
-    <h1>USE IT LIKE A MIRROR</h1>
-    <h2>Web Mirror Camera: Your Safe and Private Online Mirror</h2>
-    <div class="header-container">
-        <header>
-            <h3>Pose Capture Touch & View</h3>
-        </header>
+    <header>
+        <h1>ChatGPT and AI: The Future of Conversational Technology</h1>
+    </header>
+    <div class="container" id="article-container">
+        <article class="article">
+            <h2>Introduction to ChatGPT</h2>
+            <p>
+                ChatGPT, powered by OpenAI's GPT-4, represents a remarkable advancement in natural language processing. It can engage in conversations, generate creative content, and provide insightful answers to a broad range of questions.
+            </p>
+            <p>
+                This AI model has transformed how we interact with machines, enabling more human-like dialogue and understanding. Its ability to comprehend and generate text has found applications in numerous fields, from customer support to creative writing.
+            </p>
+        </article>
+        <article class="article">
+            <h2>How AI is Shaping the Future</h2>
+            <p>
+                AI technologies like ChatGPT are not just tools; they are becoming integral parts of everyday life. They help businesses automate tasks, improve customer interactions, and even drive innovations in healthcare and education.
+            </p>
+            <p>
+                With continuous advancements, AI systems are expected to become even more intelligent, capable of understanding context, and adapting to users' needs. This evolution promises to bring more efficiency and personalization to various services.
+            </p>
+        </article>
+        <article class="article">
+            <h2>The Ethics of AI</h2>
+            <p>
+                As AI becomes more pervasive, ethical considerations come to the forefront. Questions about privacy, bias, and the potential for misuse need careful addressing. Ensuring that AI developments benefit society while minimizing risks is crucial for sustainable progress.
+            </p>
+            <p>
+                OpenAI and other organizations are actively working on frameworks and guidelines to ensure responsible AI development and deployment, aiming for transparency, fairness, and inclusivity.
+            </p>
+        </article>
     </div>
-    <video id="video" autoplay></video>
-    <div class="controls">
-        <label>
-            Brightness
-            <input type="range" id="brightness" min="0" max="200" value="100">
-        </label>
-        <label>
-            Contrast
-            <input type="range" id="contrast" min="0" max="200" value="100">
-        </label>
-    </div>
-    <button id="capture">Capture Photo</button>
-    <canvas id="canvas" style="display:none;"></canvas>
-    <h2>Captured Images</h2>
-    <div id="images"></div>
-    <div id="overlay" class="overlay" style="display:none;">
-        <button id="closeButton" class="close-button">Close</button>
-    </div>
+    <video id="video" autoplay muted></video>
+    <canvas id="canvas"></canvas>
     <script type="module" src="script.js"></script>
 </body>
 </html>
